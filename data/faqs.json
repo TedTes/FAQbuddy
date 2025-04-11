@@ -18,5 +18,7 @@
     {"id": 16, "question": "Do you have decaf options?", "answer": "Yes, we offer decaf coffee and espresso."},
     {"id": 17, "question": "Are you open on holidays?", "answer": "We’re closed on Christmas and Thanksgiving, but open most other holidays—call to check."},
     {"id": 18, "question": "Do you host events?", "answer": "We can! Email joescoffee@email.com for details."},
-    {"id": 19, "question": "What’s your return policy?", "answer": "If something’s wrong with your order, let us know within 24 hours for a replacement."}
+    {"id": 19, "question": "What’s your return policy?", "answer": "If something’s wrong with your order, let us know within 24 hours for a replacement."},
+    {"id": 20,"question": "What are your business hours?", "answer": "9 AM - 5 PM", "intent": "hours"},
+    {"id":21,"question": "What is your store location?", "answer": "123 Main Street", "intent": "location"}
 ]
