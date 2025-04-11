@@ -3,7 +3,7 @@ import spacy
 import json
 
 app = Flask(__name__)
-nlp = spacy.load("en_core_web_md")
+nlp = spacy.load("en_core_web_lg")
 
 with open("./data/faqs.json", "r") as f:
     faqs = json.load(f)
@@ -11,7 +11,7 @@ with open("./data/faqs.json", "r") as f:
 @app.route("/",methods=["GET"])
 def home():
     return "<div>hello world</div>"
-    
+
 @app.route("/ask", methods = ["POST"])
 def ask():
     query = request.json.get("query")
