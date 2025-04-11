@@ -1,0 +1,8 @@
+training_data = [
+    ("What are your hours?", "hours"),
+    ("When are you open?", "hours"),
+    ("Are you open now?", "hours"),
+    ("Where’s your store?", "location"),
+    ("What’s your address?", "location"),
+    ("Do you offer refunds?", "refund")
+]
