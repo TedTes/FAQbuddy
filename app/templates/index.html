@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; max-width: 600px; margin: auto; }
+        #chat-container { border: 1px solid #ccc; padding: 10px; height: 400px; overflow-y: auto; }
+        .message { margin: 10px; padding: 10px; border-radius: 5px; }
+        .user { background: #e0f7fa; text-align: right; }
+        .bot { background: #f5f5f5; }
+        #input-container { display: flex; margin-top: 10px; }
+        #query { flex: 1; padding: 10px; }
+        button { padding: 10px; }
+        @media (max-width: 600px) { #chat-container { height: 300px; } }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQBuddy</title>
+
+</head>
+<body>
+    <h1>FAQBuddy</h1>
+    <div id="chat-container"></div>
+    <div id="input-container">
+        <input type="text" id="query" placeholder="Ask something..." />
+        <button onclick="sendQuery()">Send</button>
+    </div>
+    <script>
+        async function sendQuery() {
+            const queryInput = document.getElementById("query");
+            const query = queryInput.value.trim();
+            if (!query) return;
+
+            // Add user message
+            const chat = document.getElementById("chat-container");
+            chat.innerHTML += `<div class="message user">${query}</div>`;
+            queryInput.value = "";
+            chat.scrollTop = chat.scrollHeight;
+
+            // Call API
+            try {
+                const response = await fetch("/ask", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query })
+                });
+                const data = await response.json();
+                chat.innerHTML += `<div class="message bot">${data.answer}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+            } catch (error) {
+                chat.innerHTML += `<div class="message bot">Error: Try again!</div>`;
+            }
+        }
+
+        // Allow Enter key to send
+        document.getElementById("query").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") sendQuery();
+        });
+    </script>
+</body>
+</html>
