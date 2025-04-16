@@ -1,5 +1,9 @@
 [
-    {"query": "What are your hours?", "intent": "hours"},
-    {"query": "Are you open now?", "intent": "hours"},
-    {"query": "Where’s your store?", "intent": "location"}
-  ]
+  {"query": "What are your hours?", "intent": "hours"},
+  {"query": "When are you open?", "intent": "hours"},
+  {"query": "Are you open now?", "intent": "hours"},
+  {"query": "Where’s your store?", "intent": "location"},
+  {"query": "What’s your address?", "intent": "location"},
+  {"query": "Do you offer refunds?", "intent": "refund"},
+  {"query": "Can I return an item?", "intent": "refund"}
+]
