@@ -1,3 +1,3 @@
 class Config:
     SECRET_KEY = "temp-secret-key"
-    SPACY_MODEL = "en_core_web_sm"
+    SENTENCE_TRANSFORMER_MODEL = "all-MiniLM-L6-v2"
