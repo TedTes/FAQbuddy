@@ -21,7 +21,7 @@
         </div>
     `;
     document.body.appendChild(widget);
-    
+
     let touchStartY = 0;
     widget.addEventListener("touchstart", (e) => {
         touchStartY = e.touches[0].clientY;
@@ -30,7 +30,15 @@
         const touchY = e.touches[0].clientY;
         if (touchY - touchStartY > 100) toggleWidget(); // Swipe down to close
     });
-    // Load Tailwind CSS
+// theme support
+    const theme = script.dataset.theme || "blue";
+    const themeStyles = {
+    blue: { header: "bg-blue-600", button: "bg-blue-600 hover:bg-blue-700" },
+    green: { header: "bg-green-600", button: "bg-green-600 hover:bg-green-700" }
+    };
+    widget.querySelector(".bg-blue-600").className = `text-white p-3 rounded-t-lg flex justify-between items-center ${themeStyles[theme]?.header || "bg-blue-600"}`;
+    toggleBtn.className = `fixed bottom-4 right-4 text-white w-12 h-12 rounded-full shadow-lg ${themeStyles[theme]?.button || "bg-blue-600 hover:bg-blue-700"}`;
+// Load Tailwind CSS
     const tailwind = document.createElement("link");
     tailwind.rel = "stylesheet";
     tailwind.href = "https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css";
