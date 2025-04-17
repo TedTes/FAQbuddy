@@ -1,4 +1,5 @@
 (function () {
+    console.log("helo world")
     // Create widget container
     const widget = document.createElement("div");
     widget.id = "faqbuddy-widget";
@@ -22,6 +23,47 @@
     `;
     document.body.appendChild(widget);
 
+
+    // Functions
+    window.toggleWidget = function () {
+        widget.classList.toggle("hidden");
+        toggleBtn.classList.toggle("hidden");
+    };
+
+    window.sendQuery = async function () {
+        console.log("function called")
+        const queryInput = document.getElementById("query");
+        const query = queryInput.value.trim();
+        if (!query) return;
+
+        // Show user message
+        chatContainer.innerHTML += `<div class="bg-blue-100 text-right m-2 p-2 rounded-lg">${query}</div>`;
+        queryInput.value = "";
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+        chatHistory.push({ sender: "user", message: query });
+        localStorage.setItem("faqbuddy_history", JSON.stringify(chatHistory));
+
+        // Show typing indicator
+        const typing = document.getElementById("typing-indicator");
+        typing.classList.remove("hidden");
+
+        try {
+            const response = await fetch("https://faqbuddy.onrender.com/ask", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ query })
+            });
+            const data = await response.json();
+            typing.classList.add("hidden");
+            chatContainer.innerHTML += `<div class="bg-gray-100 m-2 p-2 rounded-lg">${data.answer}</div>`;
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            chatHistory.push({ sender: "bot", message: data.answer });
+            localStorage.setItem("faqbuddy_history", JSON.stringify(chatHistory));
+        } catch (error) {
+            typing.classList.add("hidden");
+            chatContainer.innerHTML += `<div class="bg-red-100 m-2 p-2 rounded-lg">Error: Try again!</div>`;
+        }
+    };
     let touchStartY = 0;
     widget.addEventListener("touchstart", (e) => {
         touchStartY = e.touches[0].clientY;
@@ -30,14 +72,7 @@
         const touchY = e.touches[0].clientY;
         if (touchY - touchStartY > 100) toggleWidget(); // Swipe down to close
     });
-// theme support
-    const theme = script.dataset.theme || "blue";
-    const themeStyles = {
-    blue: { header: "bg-blue-600", button: "bg-blue-600 hover:bg-blue-700" },
-    green: { header: "bg-green-600", button: "bg-green-600 hover:bg-green-700" }
-    };
-    widget.querySelector(".bg-blue-600").className = `text-white p-3 rounded-t-lg flex justify-between items-center ${themeStyles[theme]?.header || "bg-blue-600"}`;
-    toggleBtn.className = `fixed bottom-4 right-4 text-white w-12 h-12 rounded-full shadow-lg ${themeStyles[theme]?.button || "bg-blue-600 hover:bg-blue-700"}`;
+
 // Load Tailwind CSS
     const tailwind = document.createElement("link");
     tailwind.rel = "stylesheet";
@@ -72,45 +107,7 @@
         }
     }).catch(err => console.error("Failed to load config", err));
     
-    // Functions
-    window.toggleWidget = function () {
-        widget.classList.toggle("hidden");
-        toggleBtn.classList.toggle("hidden");
-    };
 
-    window.sendQuery = async function () {
-        const queryInput = document.getElementById("query");
-        const query = queryInput.value.trim();
-        if (!query) return;
-
-        // Show user message
-        chatContainer.innerHTML += `<div class="bg-blue-100 text-right m-2 p-2 rounded-lg">${query}</div>`;
-        queryInput.value = "";
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-        chatHistory.push({ sender: "user", message: query });
-        localStorage.setItem("faqbuddy_history", JSON.stringify(chatHistory));
-
-        // Show typing indicator
-        const typing = document.getElementById("typing-indicator");
-        typing.classList.remove("hidden");
-
-        try {
-            const response = await fetch("https://faqbuddy.onrender.com/ask", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ query })
-            });
-            const data = await response.json();
-            typing.classList.add("hidden");
-            chatContainer.innerHTML += `<div class="bg-gray-100 m-2 p-2 rounded-lg">${data.answer}</div>`;
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            chatHistory.push({ sender: "bot", message: data.answer });
-            localStorage.setItem("faqbuddy_history", JSON.stringify(chatHistory));
-        } catch (error) {
-            typing.classList.add("hidden");
-            chatContainer.innerHTML += `<div class="bg-red-100 m-2 p-2 rounded-lg">Error: Try again!</div>`;
-        }
-    };
 
     // Enter key support
     document.getElementById("query").addEventListener("keypress", (e) => {
