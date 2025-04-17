@@ -21,7 +21,15 @@
         </div>
     `;
     document.body.appendChild(widget);
-
+    
+    let touchStartY = 0;
+    widget.addEventListener("touchstart", (e) => {
+        touchStartY = e.touches[0].clientY;
+    });
+    widget.addEventListener("touchmove", (e) => {
+        const touchY = e.touches[0].clientY;
+        if (touchY - touchStartY > 100) toggleWidget(); // Swipe down to close
+    });
     // Load Tailwind CSS
     const tailwind = document.createElement("link");
     tailwind.rel = "stylesheet";
