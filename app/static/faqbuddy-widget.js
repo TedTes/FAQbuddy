@@ -95,4 +95,14 @@
     document.getElementById("query").addEventListener("keypress", (e) => {
         if (e.key === "Enter") sendQuery();
     });
+
+   
+
+    const style = document.createElement("style");
+    style.innerHTML = `
+    @media (max-width: 400px) {
+        #faqbuddy-widget { width: 100%; height: 100%; bottom: 0; right: 0; border-radius: 0; }
+    }
+   `;
+    document.head.appendChild(style);
 })();
