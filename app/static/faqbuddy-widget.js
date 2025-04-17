@@ -59,14 +59,19 @@
     });
     chatContainer.scrollTop = chatContainer.scrollHeight;
 
-    // Load logo from script data attribute
-    const script = document.querySelector('script[src*="faqbuddy-widget.js"]');
-    const logoUrl = script.dataset.logo || "";
-    if (logoUrl) {
-        document.getElementById("business-logo").src = logoUrl;
-        document.getElementById("business-logo").style.display = "block";
-    }
-
+    fetch("https://faqbuddy.onrender.com/config")
+    .then(res => res.json())
+    .then(config => {
+        if (config.logo) {
+            document.getElementById("business-logo").src = config.logo;
+            document.getElementById("business-logo").style.display = "block";
+        }
+        if (config.theme && themeStyles[config.theme]) {
+            widget.querySelector(".rounded-t-lg").className = `text-white p-3 rounded-t-lg flex justify-between items-center ${themeStyles[config.theme].header}`;
+            toggleBtn.className = `fixed bottom-4 right-4 text-white w-12 h-12 rounded-full shadow-lg ${themeStyles[config.theme].button}`;
+        }
+    }).catch(err => console.error("Failed to load config", err));
+    
     // Functions
     window.toggleWidget = function () {
         widget.classList.toggle("hidden");
