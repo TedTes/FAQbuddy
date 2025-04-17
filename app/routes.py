@@ -12,6 +12,10 @@ bp = Blueprint("routes", __name__)
 def index():
     return render_template("index.html")
 
+@bp.route("/health",methods=["GET"])
+def check_health():
+    return jsonify({"status":"ok"})
+    
 @bp.route("/ask", methods=["POST"])
 def ask():
     query = request.json.get("query")
