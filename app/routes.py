@@ -44,5 +44,5 @@ def index():
 @bp.route("/api/faqs/<int:id>", methods=["PUT"])
 def update_faq(id):
     data = request.get_json()
-    update_faq(data)
+    update_faq(id,data)
     return jsonify(data)
