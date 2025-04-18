@@ -18,7 +18,7 @@ def ask():
     final_answer = process_dynamic(query, intent, answer)
     return jsonify({"answer": final_answer})
 
-@bp.route("/api/faqs", methods=["POST"])
+@bp.route("/faqs", methods=["POST"])
 def add_faq():
     data = request.get_json()
     faq_id = faq_service(data)
@@ -32,7 +32,7 @@ def check_health():
 def dashboard():
     return render_template("dashboard.html")
 
-@bp.route("/api/faqs/<int:id>", methods=["DELETE"])
+@bp.route("/faqs/<int:id>", methods=["DELETE"])
 def delete_faq(id):
     try:
         delete_faq(id)
@@ -42,23 +42,27 @@ def delete_faq(id):
     except Exception as e:
         return jsonify({"error": "Internal Server Error"}), 500
 
-@bp.route("/config", methods=["GET"])
-def get_config():
-    # TODO: Fetch from database
-    return jsonify({"theme": "blue", "logo": "https://cafe.com/logo.png"})
+@bp.route("/config/<int:business_Id>", methods=["GET"])
+def get_config(business_Id):
+    try:  
+        config = get_config(business_Id)
+        response = dict(config) if config else {"theme": "blue", "logo": "https://cafe.com/logo.png"}
+        return jsonify(response)
+    except Exception as e:
+        return jsonify({"error": "Internal Server Error"}), 500
 
 @bp.route("/")
 def index():
     return render_template("index.html")
 
-@bp.route("/api/faqs", methods=["GET"])
+@bp.route("/faqs", methods=["GET"])
 def list_faqs():
     try:
         faqs = list_faqs()
         return jsonify([dict(faq) for faq in faqs])
     except Exception as e:
         return jsonify({"error": "Internal Server Error"}), 500
-@bp.route("/api/faqs/<int:id>", methods=["PUT"])
+@bp.route("/faqs/<int:id>", methods=["PUT"])
 def update_faq(id):
     try:
        data = request.get_json()
