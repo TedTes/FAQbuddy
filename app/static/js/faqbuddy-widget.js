@@ -48,7 +48,7 @@
         typing.classList.remove("hidden");
 
         try {
-            const response = await fetch("https://faqbuddy.onrender.com/ask", {
+            const response = await fetch("https://faqbuddy.onrender.com/api/v1/ask", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ query })
@@ -94,7 +94,7 @@
     });
     chatContainer.scrollTop = chatContainer.scrollHeight;
 
-    fetch("https://faqbuddy.onrender.com/config")
+    fetch("https://faqbuddy.onrender.com/api/v1/config")
     .then(res => res.json())
     .then(config => {
         if (config.logo) {
