@@ -5,7 +5,7 @@ from app.nlp.dynamic_logic import process_dynamic
 from app.data.faq_manager import load_faqs, save_faqs
 from flask import jsonify
 
-bp = Blueprint("routes", __name__)
+bp = Blueprint("routes", __name__,url_prefix="/api/v1")
 
 
 @bp.route("/")
