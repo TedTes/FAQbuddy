@@ -13,14 +13,6 @@ def add_faq(data):
         conn.rollback()
         raise RuntimeError(f"error add_faq function: {str(e)}")
            
-def get_config(business_id):
-    try:
-        with get_db as conn:
-            config = conn.execute("SELECT * FROM config WHERE business_id = ?",(business_id,)).fetchone()
-            return config
-    except Exception as e:
-        conn.rollback()
-        raise RuntimeError(f"error get_config function : {str(e)}")
 def delete_faq(id):
        try:
           with get_db as conn:

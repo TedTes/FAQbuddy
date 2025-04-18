@@ -5,6 +5,7 @@ from app.nlp.dynamic_logic import process_dynamic
 from app.data.faq_manager import load_faqs, save_faqs
 from flask import jsonify
 from app.services.faq_service import add_faq,update_faq,delete_faq
+from app.services.config_service import get_config,update_config
 
 bp = Blueprint("routes", __name__,url_prefix="/api/v1")
 
@@ -42,10 +43,10 @@ def delete_faq(id):
     except Exception as e:
         return jsonify({"error": "Internal Server Error"}), 500
 
-@bp.route("/config/<int:business_Id>", methods=["GET"])
-def get_config(business_Id):
+@bp.route("/config/<int:user_id>", methods=["GET"])
+def get_config(user_id):
     try:  
-        config = get_config(business_Id)
+        config = get_config(user_id)
         response = dict(config) if config else {"theme": "blue", "logo": "https://cafe.com/logo.png"}
         return jsonify(response)
     except Exception as e:
@@ -62,6 +63,17 @@ def list_faqs():
         return jsonify([dict(faq) for faq in faqs])
     except Exception as e:
         return jsonify({"error": "Internal Server Error"}), 500
+
+
+@bp.route("/api/config/<int:user_id>", methods=["PATCH"])
+def update_config(user_id):
+    try:
+        data = request.get_json()
+        update_config(user_id, data)
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({"error updating config": "Internal Server Error"}), 500
+
 @bp.route("/faqs/<int:id>", methods=["PUT"])
 def update_faq(id):
     try:
