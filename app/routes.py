@@ -4,7 +4,7 @@ from app.nlp.similarity_matcher import match_faq
 from app.nlp.dynamic_logic import process_dynamic
 from app.data.faq_manager import load_faqs, save_faqs
 from flask import jsonify
-from app.services.faq_service import add_faq,update_faq
+from app.services.faq_service import add_faq,update_faq,delete_faq
 
 bp = Blueprint("routes", __name__,url_prefix="/api/v1")
 
@@ -32,6 +32,16 @@ def check_health():
 def dashboard():
     return render_template("dashboard.html")
 
+@bp.route("/api/faqs/<int:id>", methods=["DELETE"])
+def delete_faq(id):
+    try:
+        delete_faq(id)
+        return jsonify({"message": "Deleted"}), 204
+    except ValueError  as ve:
+        return jsonify({"error": str(ve)}), 404
+    except Exception as e:
+        return jsonify({"error": "Internal Server Error"}), 500
+
 @bp.route("/config", methods=["GET"])
 def get_config():
     # TODO: Fetch from database
@@ -41,8 +51,20 @@ def get_config():
 def index():
     return render_template("index.html")
 
+@bp.route("/api/faqs", methods=["GET"])
+def list_faqs():
+    try:
+        faqs = list_faqs()
+        return jsonify([dict(faq) for faq in faqs])
+    except Exception as e:
+        return jsonify({"error": "Internal Server Error"}), 500
 @bp.route("/api/faqs/<int:id>", methods=["PUT"])
 def update_faq(id):
-    data = request.get_json()
-    update_faq(id,data)
-    return jsonify(data)
+    try:
+       data = request.get_json()
+       update_faq(id,data)
+       return jsonify(data)
+    except Exception as e:
+        return jsonify({"update faq error": "Internal Server Error"}), 500
+    
+   
