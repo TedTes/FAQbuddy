@@ -14,7 +14,7 @@ def match_faq(query, intent):
         if max_index >=0 and similarities[max_idx] > 0.80:  
             return faqs[max_idx]["answer"]
         return "Sorry, I don’t know!"
-   except Exception as e:
+  except Exception as e:
         print(f"error at match faq method:{str(e)}")
         raise RuntimeError(f"error at match faq error")
 
