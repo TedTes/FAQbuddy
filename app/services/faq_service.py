@@ -2,7 +2,7 @@ from db import get_db
 
 def add_faq(data):
     try:
-        with get_db as conn:
+        with get_db() as conn:
             cursor = conn.execute(
                 "INSERT INTO faqs (question, answer, intent) VALUES (?, ?, ?)",
                 (data["question"], data["answer"], data["intent"])
@@ -15,7 +15,7 @@ def add_faq(data):
            
 def delete_faq(id):
        try:
-          with get_db as conn:
+          with get_db() as conn:
             conn.execute("DELETE FROM faqs WHERE id = ?", (id,))
             conn.commit()
             if result.rowcount == 0:
@@ -25,7 +25,7 @@ def delete_faq(id):
             raise RuntimeError(f"Error deleting FAQ: {str(e)}")
 def list_faqs():
     try :
-        with get_db as conn:
+        with get_db() as conn:
             faqs = conn.execute("SELECT * FROM faqs").fetchall()
             return faqs
     except Exception as e:
@@ -34,7 +34,7 @@ def list_faqs():
     
 def update_faq(id,data):
      try:
-        with get_db as conn:
+        with get_db() as conn:
             conn.execute(
                 "UPDATE faqs SET question = ?, answer = ?, intent = ? WHERE id = ?",
                 (data["question"], data["answer"], data["intent"], id)
