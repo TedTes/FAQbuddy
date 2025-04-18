@@ -12,13 +12,15 @@ bp = Blueprint("routes", __name__,url_prefix="/api/v1")
 
 @bp.route("/ask", methods=["POST"])
 def ask():
-    query = request.json.get("query")
-    intent = predict_intent(query)
-    session["last_intent"] = intent
-    answer = match_faq(query, intent,current_app.faqs)
-    final_answer = process_dynamic(query, intent, answer)
-    return jsonify({"answer": final_answer})
-
+    try:
+        query = request.json.get("query")
+        intent = predict_intent(query)
+        session["last_intent"] = intent
+        answer = match_faq(query, intent)
+        final_answer = process_dynamic(query, intent, answer)
+        return jsonify({"answer": final_answer})
+    except Exception as e:
+        return jsonify({f"internal server error:{str(e)}"}),500
 @bp.route("/faqs", methods=["POST"])
 def add_faq():
     data = request.get_json()
