@@ -21,10 +21,13 @@ def ask():
         return jsonify({"answer": final_answer})
     except Exception as e:
         return jsonify({f"internal server error:{str(e)}"}),500
+
 @faq_bp.route("/faqs", methods=["POST"])
+@jwt_required()
 def add_faq():
+    user_id = get_jwt_identity()
     data = request.get_json()
-    faq_id = faq_service(data)
+    faq_id = add_faq(user_id,data)
     return jsonify({"id": faq_id, **data}), 201
 
 
@@ -33,9 +36,11 @@ def dashboard():
     return render_template("dashboard.html")
 
 @faq_bp.route("/faqs/<int:id>", methods=["DELETE"])
+@jwt_required()
 def delete_faq(id):
     try:
-        delete_faq(id)
+        user_id = get_jwt_identity()
+        delete_faq(user_id,id)
         return jsonify({"message": "Deleted"}), 204
     except ValueError  as ve:
         return jsonify({"error": str(ve)}), 404
@@ -43,9 +48,9 @@ def delete_faq(id):
         return jsonify({"error": "Internal Server Error"}), 500
 
 @faq_bp.route("/config/<int:user_id>", methods=["GET"])
-def get_config(user_id):
+def get_config():
     try:  
-        config = get_config(user_id)
+        config = get_config()
         response = dict(config) if config else {"theme": "blue", "logo": "https://cafe.com/logo.png"}
         return jsonify(response)
     except Exception as e:
@@ -53,17 +58,21 @@ def get_config(user_id):
 
 
 @faq_bp.route("/faqs", methods=["GET"])
+@jwt_required()
 def list_faqs():
     try:
-        faqs = list_faqs()
+        user_id = get_jwt_identity()
+        faqs = list_faqs(user_id)
         return jsonify([dict(faq) for faq in faqs])
     except Exception as e:
         return jsonify({"error": "Internal Server Error"}), 500
 
 
 @faq_bp.route("/api/config/<int:user_id>", methods=["PATCH"])
-def update_config(user_id):
+@jwt_required()
+def update_config():
     try:
+        user_id = get_jwt_identity()
         data = request.get_json()
         update_config(user_id, data)
         return jsonify(data)
@@ -71,10 +80,12 @@ def update_config(user_id):
         return jsonify({"error updating config": "Internal Server Error"}), 500
 
 @faq_bp.route("/faqs/<int:id>", methods=["PUT"])
+@jwt_required()
 def update_faq(id):
     try:
+       user_id = get_jwt_identity()
        data = request.get_json()
-       update_faq(id,data)
+       update_faq(user_id,id,data)
        return jsonify(data)
     except Exception as e:
         return jsonify({"update faq error": "Internal Server Error"}), 500
