@@ -29,7 +29,9 @@ def login():
         email = data.get("email")
         password = data.get("password")
         access_token , business_id = login_user(email,password)
-        return jsonify({"access_token": access_token, "business_id": business_id})
+        response = jsonify({"business_id": business_id})
+        set_access_cookies(response, access_token)
+        return response
     except Exception as e:
         return jsonify({"error": "Invalid credentials"}), 401
    
