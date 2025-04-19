@@ -7,6 +7,9 @@ from flask import jsonify
 from app.services.faq_service import add_faq,update_faq,delete_faq
 from app.services.config_service import get_config,update_config
 
+from flask_jwt_extended import  jwt_required, get_jwt_identity
+
+
 faq_bp = Blueprint("faq", __name__)
 
 
@@ -30,10 +33,6 @@ def add_faq():
     faq_id = add_faq(user_id,data)
     return jsonify({"id": faq_id, **data}), 201
 
-
-@faq_bp.route("/dashboard")
-def dashboard():
-    return render_template("dashboard.html")
 
 @faq_bp.route("/faqs/<int:id>", methods=["DELETE"])
 @jwt_required()
