@@ -7,7 +7,7 @@ from flask_cors import CORS
 jwt = JWTManager()
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder="static", static_url_path="/")
     app.config.from_object(Config)
     jwt.init_app(app)
     CORS(app, supports_credentials=True)
