@@ -3,7 +3,6 @@ from app.nlp.intent_classifier import predict_intent
 from app.nlp.similarity_matcher import match_faq
 from app.nlp.dynamic_logic import process_dynamic
 from app.data.faq_manager import load_faqs, save_faqs
-from flask import jsonify
 from app.services.faq_service import add_faq,update_faq,delete_faq
 from app.services.config_service import get_config,update_config
 

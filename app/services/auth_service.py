@@ -31,7 +31,7 @@ def login_user(email,password):
 def me(user_id):
     try:
        with get_db() as conn:
-          user = conn.execute("SELECT id, email, business_id FROM users WHERE id = ?", (user_id,)).fetchone()
-        return user
-     except Exception as e:
+          user = conn.execute("SELECT id, email, business_id FROM users WHERE id = ?", (user_id,)).fetchone()     
+          return user
+    except Exception as e:
           raise RuntimeError(f"error fetching user:{str(e)}")  
