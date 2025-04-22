@@ -7,3 +7,4 @@ class Config:
     JWT_COOKIE_SAMESITE = 'Lax'        
     JWT_ACCESS_COOKIE_PATH = '/'
     JWT_COOKIE_CSRF_PROTECT = False     
+    JWT_COOKIE_HTTPONLY = True

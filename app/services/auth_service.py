@@ -1,12 +1,14 @@
 
 from db import get_db
 import bcrypt
+import sqlite3
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 
 def register_user(email, password):
      try:
         with get_db() as conn:
           cursor = conn.execute("INSERT INTO config (theme, logo, hours) VALUES (?, ?, ?)", ("blue", "", "9 AM - 5 PM"))
+
           business_id = cursor.lastrowid
           password_hash = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
           conn.execute("INSERT INTO users (email, password_hash, business_id) VALUES (?, ?, ?)", (email, password_hash, business_id))
