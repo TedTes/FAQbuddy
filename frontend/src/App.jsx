@@ -1,60 +1,61 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import {
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+
 import Login from "./components/Login";
 import Register from "./components/Register";
 import FaqList from "./components/FaqList";
 import Overview from "./components/Overview";
 import Analytics from "./components/Analytics";
 import Settings from "./components/Settings";
+import Dashboard from "./components/Dashboard";
+import Sidebar from "./components/Sidebar";
+import ProtectedRoute from "./auth/ProtectedRoute";
 
-const App = () => {
-  const [route, setRoute] = useState(localStorage.getItem("token") ? "overview" : "login");
-  const [user, setUser] = useState(null);
-  const SERVER_URI = import.meta.env.VITE_API_URL;
+// // AppLayout.jsx
+// import Sidebar from "./components/Sidebar";
+import { Outlet } from "react-router-dom";
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      fetch(`${SERVER_URI}/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then((res) => res.json())
-        .then((data) => setUser(data))
-        .catch(() => {
-          localStorage.removeItem("token");
-          setRoute("login");
-        });
-    }
-  }, []);
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
-    setRoute("login");
-  };
-
-  if (route === "login") return <Login setRoute={setRoute} />;
-  if (route === "register") return <Register setRoute={setRoute} />;
-
+const AppLayout = ({ onLogout }) => {
   return (
     <div className="flex h-screen">
-      <aside className="w-64 bg-gray-800 text-white p-4">
-        <h1 className="text-xl font-bold mb-6">FAQBuddy</h1>
-        <nav>
-          <button onClick={() => setRoute("overview")} className="block p-2 hover:bg-gray-700 rounded">Overview</button>
-          <button onClick={() => setRoute("faqs")} className="block p-2 hover:bg-gray-700 rounded">FAQs</button>
-          <button onClick={() => setRoute("settings")} className="block p-2 hover:bg-gray-700 rounded">Settings</button>
-          <button onClick={() => setRoute("analytics")} className="block p-2 hover:bg-gray-700 rounded">Analytics</button>
-          <button onClick={logout} className="block p-2 hover:bg-gray-700 rounded mt-4">Logout</button>
-        </nav>
-      </aside>
+      <Sidebar onLogout={onLogout} />
       <main className="flex-1 bg-gray-100 p-4">
-        {route === "overview" && <Overview />}
-        {route === "faqs" && <FaqList />}
-        {route === "settings" && <Settings />}
-        {route === "analytics" && <Analytics />}
+        <Outlet /> {/* This renders the nested route content */}
       </main>
     </div>
   );
 };
+
+
+
+function App() {
+  const [user, setUser] = useState(null);
+
+  const logout = () => {
+    setUser(null);
+    window.location.href = "/login";
+  };
+
+  return (
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route element={<ProtectedRoute/>}>
+        <Route element={<AppLayout onLogout={logout} />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/overview" element={<Overview />} />
+          <Route path="/faqs" element={<FaqList />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="*" element={<Navigate to="/dashboard" />} />
+        </Route>
+        </Route>
+      </Routes>
+  );
+}
 
 export default App;

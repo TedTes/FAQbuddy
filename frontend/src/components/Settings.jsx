@@ -1,29 +1,28 @@
 import {useEffect, useState} from 'react';
-
+import apiClient from '../api/apiClient';
 const Settings = () => {
     const [config, setConfig] = useState({ theme: "blue", logo: "", hours: "" });
-
+    const  [faqs, setFaqs] = useState([]);
+ 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-        
-        fetch(`${SERVER_URI}/config`, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
-            .then(res => res.json())
-            .then(data => setConfig(data))
-            .catch(err => console.error("Error fetching config:", err));
-
-        
-    }, []);
-    
-    const updateConfig = () => {
-        fetch(`${SERVER_URI}/config`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
-            body: JSON.stringify(config)
-        })
-        .then(() => alert("Settings updated!"));
+        const fetchConfig = async () => {
+          try {
+            const response = await apiClient.get("/config");
+            setFaqs(response.data); 
+          } catch (err) {
+            console.error("Failed to fetch FAQs", err);
+          }
+        };
+      
+        fetchConfig();
+      }, []);
+    const updateConfig = async () => {
+        try {
+            const response = await apiClient.patch(`/config`,config);
+        } catch(error) {
+           console.log("update config",error);
+        }
+   
     };
 
 

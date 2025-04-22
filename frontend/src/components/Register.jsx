@@ -1,23 +1,21 @@
 import {useState} from 'react';
-
+import apiClient from '../api/apiClient';
+import {
+    useNavigate,
+  } from "react-router-dom";
 const Register = () => {
     const [auth, setAuth] = useState({ email: "", password: "", business_name: "" });
-    const [route, setRoute] = useState(localStorage.getItem("token") ? "overview" : "login");
-    const register = () => {
-        fetch(`${SERVER_URI}/register`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(auth)
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.error) alert(data.error);
-                else {
-                    setAuth({ email: "", password: "", business_name: "" });
-                    alert("Registered! Please log in.");
-                    setRoute("login");
-                }
-            });
+    const navigate = useNavigate();
+    const register = async () => {
+        try {
+            const response = await apiClient.post('/auth/register',{email:auth.email, password:auth.password, business_name: auth.business_name});
+            console.log("response")
+            console.log(response);
+        } catch(error) {
+            console.log("error");
+           console.log(error);
+        }
+  
     };
 
    return <div className="flex items-center justify-center h-screen bg-gray-100">
@@ -46,7 +44,7 @@ const Register = () => {
                 />
                 <button onClick={register} className="bg-blue-600 text-white p-2 rounded w-full">Register</button>
                 <p className="mt-2 text-center">
-                    Have an account? <button onClick={() => setRoute("login")} className="text-blue-600">Login</button>
+                    Have an account? <button onClick={() => navigate("/login")} className="text-blue-600">Login</button>
                 </p>
             </div>
     </div>

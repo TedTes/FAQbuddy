@@ -1,26 +1,30 @@
 
 import {useState} from 'react';
-
+import {
+    useNavigate,
+  } from "react-router-dom";
+import apiClient from '../api/apiClient';
 const Login = () => {
-    
+  
     const [auth, setAuth] = useState({ email: "", password: "", business_name: "" });
-
-    const login = () => {
-        fetch(`${SERVER_URI}/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ email: auth.email, password: auth.password })
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.error) alert(data.error);
-                else {
-                    localStorage.setItem("token", data.access_token);
-                    setUser({ business_id: data.business_id });
-                    setRoute("overview");
-                }
-            });
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
+    const login = async () => {
+            try {
+                const response = await apiClient.post('/auth/login',{email: auth.email, password: auth.password});
+              
+                if (response.data.error) {
+                    alert(response.data.error);
+                  } else {
+                    setUser({ business_id: response.data.business_id });
+                    navigate("/dashboard");
+                  }
+            } catch(error) {
+               console.log("login error :",error)
+            }
+      
+  
+  
     };
    return  <div className="flex items-center justify-center h-screen bg-gray-100">
         <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
@@ -41,7 +45,7 @@ const Login = () => {
             />
             <button onClick={login} className="bg-blue-600 text-white p-2 rounded w-full">Login</button>
             <p className="mt-2 text-center">
-                No account? <button onClick={() => setRoute("register")} className="text-blue-600">Register</button>
+                No account? <button onClick={() => navigate("/register")} className="text-blue-600">Register</button>
             </p>
         </div>
     </div>

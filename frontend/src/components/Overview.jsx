@@ -1,21 +1,19 @@
 import {useEffect, useState} from 'react';
-
+import apiClient from '../api/apiClient';
 const  Overview = () => {
     const [faqs, setFaqs] = useState([]);
-
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-        
-        fetch(`${SERVER_URI}/faqs`, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-                .then(res => res.json())
-                .then(data => setFaqs(data))
-                .catch(err => console.error("Error fetching FAQs:", err));
-        
-       
-    }, [faqs]);
+        const fetchFaqs = async () => {
+          try {
+            const response = await apiClient.get("/faqs");
+            setFaqs(response.data);
+          } catch (err) {
+            console.error("Failed to fetch FAQs", err);
+          }
+        };
+      
+        fetchFaqs();
+      }, []);
 
     return <div className="p-6">
         <h2 className="text-2xl font-bold mb-4">Overview</h2>

@@ -1,28 +1,31 @@
 import apiClient from "../api/apiClient";
+import { Navigate, Outlet } from "react-router-dom";
 import {useState,useEffect} from 'react';
-import {
-  Navigate,
-} from "react-router-dom";
-const ProtectedRoute = ({ children }) => {
-  
+
+const ProtectedRoute = () => {
     const [authenticated, setAuthenticated] = useState(null);
   
     useEffect(() => {
       const checkAuth = async () => {
         try {
           const response =  await apiClient.get('/auth/check'); 
-          console.log("from server")
-          console.log(response);
           setAuthenticated(true);
-        } catch {
+        } catch(error) {
+          console.error("Auth check failed:", error);
           setAuthenticated(false);
         }
       };
       checkAuth();
     }, []);
   
-    if (authenticated === null) return <div>Loading...</div>;
-    return authenticated ? children : <Navigate to="/login" />;
+    if (authenticated === null) {
+      return (
+        <div className="flex h-screen items-center justify-center">
+          <div className="text-lg font-semibold text-gray-700">Checking Auth...</div>
+        </div>
+      );
+    }
+    return authenticated ? <Outlet /> : <Navigate to="/login" />;
   };
   
   export default ProtectedRoute
