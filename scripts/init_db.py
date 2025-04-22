@@ -10,6 +10,7 @@ def init_db():
             intent TEXT NOT NULL
         )
     """)
+    conn.execute("ALTER TABLE  faqs ADD COLUMN business_id INTEGER NOT NULL DEFAULT 1")
     conn.execute("""
         CREATE TABLE IF NOT EXISTS config (
             business_id INTEGER PRIMARY KEY,
