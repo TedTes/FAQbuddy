@@ -66,10 +66,3 @@ def logout():
     resp.set_cookie('token', '', expires=0)
     return resp
 
-
-
-
-
-@auth_bp.errorhandler(UnprocessableEntity)
-def handle_422(e):
-    return jsonify({"error": "Invalid token or malformed request"}), 422
