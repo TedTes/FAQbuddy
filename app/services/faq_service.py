@@ -25,12 +25,12 @@ def delete_faq(user_id,id):
        except Exception as e:
             conn.rollback()
             raise RuntimeError(f"Error deleting FAQ: {str(e)}")
-def list_faqs(user_id):
+def list_faqs_by_userId(user_id):
     try :
         with get_db() as conn:
             user = conn.execute("SELECT business_id FROM users WHERE id = ?", (user_id,)).fetchone()
             faqs = conn.execute("SELECT * FROM faqs WHERE business_id = ?",(user["business_id"],)).fetchall()
-        return faqs
+            return faqs
     except Exception as e:
         raise RuntimeError(f"Error listing FAQs: {str(e)}")
     

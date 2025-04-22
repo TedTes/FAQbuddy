@@ -22,7 +22,7 @@ def login_user(email,password):
        with get_db() as conn:
             user = conn.execute("SELECT * FROM users WHERE email = ?", (email,)).fetchone()
             if user and bcrypt.checkpw(password.encode("utf-8"), user["password_hash"].encode("utf-8")):
-                access_token = create_access_token(identity=user["id"])
+                access_token = create_access_token(identity=str(user["id"]))
                 return  access_token,  user["business_id"]
             raise ValueError({"error": "Invalid credentials"})
     except Exception as e:

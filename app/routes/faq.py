@@ -3,7 +3,7 @@ from app.nlp.intent_classifier import predict_intent
 from app.nlp.similarity_matcher import match_faq
 from app.nlp.dynamic_logic import process_dynamic
 from app.data.faq_manager import load_faqs, save_faqs
-from app.services.faq_service import add_faq,update_faq,delete_faq
+from app.services.faq_service import add_faq,update_faq,delete_faq,list_faqs_by_userId
 from app.services.config_service import get_config,update_config
 
 from flask_jwt_extended import  jwt_required, get_jwt_identity
@@ -60,9 +60,10 @@ def get_config():
 def list_faqs():
     try:
         user_id = get_jwt_identity()
-        faqs = list_faqs(user_id)
+        faqs = list_faqs_by_userId(user_id)
         return jsonify([dict(faq) for faq in faqs])
     except Exception as e:
+        print(f"list faq error:{str(e)}")
         return jsonify({"error": "Internal Server Error"}), 500
 
 
